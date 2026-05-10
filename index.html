@@ -1,0 +1,664 @@
+<!DOCTYPE html><html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>মাস্টার অফিস ট্র্যাকার ২০২৬</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    :root{
+      --primary:#0f172a;
+      --primary-2:#1e293b;
+      --accent:#2563eb;
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --muted:#64748b;
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --line:#e2e8f0;
+      --soft:#f1f5f9;
+      --shadow:0 12px 30px rgba(15,23,42,.12);
+      --radius:16px;
+    }*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:12px;
+  font-family:"Segoe UI", "Noto Sans Bengali", Arial, sans-serif;
+  background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 45%,#ecfeff 100%);
+  color:#0f172a;
+}
+
+.app{
+  max-width:1240px;
+  margin:0 auto;
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(226,232,240,.9);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  backdrop-filter: blur(8px);
+}
+
+.topbar{
+  background:linear-gradient(135deg,var(--primary),#172554);
+  color:#fff;
+  padding:18px;
+  display:flex;
+  gap:12px;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.brand h1{font-size:20px;margin:0 0 5px;line-height:1.2}
+.brand p{margin:0;color:#cbd5e1;font-size:13px}
+.clock{text-align:right;font-size:13px;color:#e0f2fe;line-height:1.6}
+.clock strong{display:block;color:#fff;font-size:16px}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:14px;
+  background:#f8fafc;
+  border-bottom:1px solid var(--line);
+}
+@media(min-width:800px){.stats{grid-template-columns:repeat(6,1fr)}}
+.stat{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  min-height:78px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.stat span{font-size:12px;color:var(--muted)}
+.stat b{font-size:24px;line-height:1;color:#0f172a}
+.stat i{color:var(--accent);margin-right:6px}
+
+.panel{padding:14px;border-bottom:1px solid var(--line)}
+.panel-title{font-weight:800;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+@media(min-width:820px){
+  .task-grid{grid-template-columns:2fr 1fr 1fr 1fr auto}
+  .holiday-grid{grid-template-columns:2fr 1fr 1fr auto}
+  .tools-grid{grid-template-columns:2fr 1fr 1fr auto auto}
+}
+
+input,select,button,textarea{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  font:inherit;
+  outline:none;
+  background:#fff;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+button{cursor:pointer;font-weight:700;transition:.18s ease;border:none}
+button:hover{transform:translateY(-1px);filter:brightness(.98)}
+.btn{background:var(--accent);color:#fff;border:0;white-space:nowrap}
+.btn-success{background:var(--success);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-dark{background:var(--primary);color:#fff}
+.btn-light{background:#fff;color:#0f172a;border:1px solid var(--line)}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:12px 14px;
+  background:#f1f5f9;
+  border-bottom:1px solid var(--line);
+  align-items:center;
+}
+.tab{
+  width:auto;
+  padding:8px 13px;
+  border-radius:999px;
+  background:#fff;
+  color:#0f172a;
+  border:1px solid var(--line);
+  font-size:13px;
+  white-space:nowrap;
+}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.tab-spacer{margin-left:auto}
+
+.holiday-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{
+  display:inline-flex;
+  gap:6px;
+  align-items:center;
+  border-radius:999px;
+  padding:6px 10px;
+  background:#fff7ed;
+  color:#9a3412;
+  border:1px solid #fed7aa;
+  font-size:12px;
+  font-weight:700;
+}
+.chip i{cursor:pointer;color:#dc2626}
+
+.table-wrap{overflow-x:auto;background:#fff}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}
+th{background:#f8fafc;color:#334155;font-size:13px;position:sticky;top:0;z-index:1}
+tr:hover{background:#fafafa}
+.task-title{font-weight:800;margin-bottom:5px}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid transparent}
+.b-start{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+.b-end{background:#fff1f2;color:#be123c;border-color:#fecdd3}
+.b-active{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.b-done{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}
+.b-overdue{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
+.b-today{background:#fefce8;color:#a16207;border-color:#fde68a}
+.b-holiday{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+.b-weekend{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.priority-high{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
+.priority-normal{background:#f8fafc;color:#334155;border-color:#e2e8f0}
+.priority-low{background:#ecfdf5;color:#047857;border-color:#bbf7d0}
+.actions{display:flex;gap:8px;align-items:center}
+.icon-btn{
+  width:36px;height:36px;border-radius:10px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#f8fafc;border:1px solid var(--line);color:#334155;
+}
+.icon-btn.edit{color:#2563eb}.icon-btn.del{color:#ef4444}.icon-btn.ok{color:#10b981}
+.empty{padding:36px;text-align:center;color:var(--muted)}
+
+.footer-tools{
+  padding:12px 14px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  background:#f8fafc;
+}
+.file-input{display:none}
+.small-note{font-size:12px;color:var(--muted);line-height:1.6}
+
+@media(max-width:640px){
+  body{padding:6px}
+  .topbar{padding:14px}.brand h1{font-size:17px}.clock{text-align:left}
+  .stats{grid-template-columns:repeat(2,1fr);padding:10px}
+  .panel{padding:10px}
+  table{min-width:760px}
+  th,td{padding:10px;font-size:13px}
+}
+
+@media print{
+  body{background:#fff;padding:0}
+  .app{box-shadow:none;border:0;border-radius:0}
+  .panel,.tabs,.footer-tools,.holiday-form,.tools-panel,.actions,.no-print{display:none!important}
+  .topbar{background:#fff;color:#000;border-bottom:2px solid #000}
+  .brand p,.clock{color:#000}
+  table{min-width:0}
+  th{position:static}
+}
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1><i class="fa-solid fa-building-columns"></i> মাদরাসা অফিস অটোমেশন ২০২৬</h1>
+        <p>কাজ, ছুটি, সতর্কতা, ব্যাকআপ ও রিপোর্ট — এক পাতায়</p>
+      </div>
+      <div class="clock" id="clock"></div>
+    </header><section class="stats" id="stats"></section>
+
+<section class="panel">
+  <p class="panel-title"><i class="fa-solid fa-plus-circle"></i> কাজ যোগ / আপডেট</p>
+  <input type="hidden" id="editId" />
+  <div class="grid task-grid">
+    <input type="text" id="tTitle" placeholder="কাজের নাম..." />
+    <input type="date" id="tS" />
+    <input type="date" id="tE" />
+    <select id="tPriority">
+      <option value="normal">সাধারণ</option>
+      <option value="high">জরুরি</option>
+      <option value="low">কম জরুরি</option>
+    </select>
+    <button class="btn" onclick="saveTask()" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> সেভ</button>
+  </div>
+</section>
+
+<section class="panel holiday-form" style="background:#fffaf0">
+  <p class="panel-title"><i class="fa-solid fa-calendar-xmark"></i> ছুটি যোগ</p>
+  <div class="grid holiday-grid">
+    <input type="text" id="hTitle" placeholder="ছুটির কারণ..." />
+    <input type="date" id="hS" />
+    <input type="date" id="hE" />
+    <button class="btn-warning" onclick="addHoliday()"><i class="fa-solid fa-plus"></i> ছুটি যোগ</button>
+  </div>
+  <div class="holiday-list" id="hList"></div>
+</section>
+
+<section class="panel tools-panel">
+  <p class="panel-title"><i class="fa-solid fa-filter"></i> সার্চ ও সাজানো</p>
+  <div class="grid tools-grid">
+    <input type="search" id="searchBox" oninput="render()" placeholder="কাজ খুঁজুন..." />
+    <select id="sortBy" onchange="render()">
+      <option value="startAsc">শুরু তারিখ ↑</option>
+      <option value="startDesc">শুরু তারিখ ↓</option>
+      <option value="endAsc">শেষ তারিখ ↑</option>
+      <option value="endDesc">শেষ তারিখ ↓</option>
+      <option value="priority">জরুরি আগে</option>
+    </select>
+    <select id="rangeFilter" onchange="render()">
+      <option value="all">সব তারিখ</option>
+      <option value="today">আজকের মধ্যে শুরু</option>
+      <option value="runningToday">আজ চলমান</option>
+      <option value="overdue">সময় পার হয়েছে</option>
+      <option value="next7">আগামী ৭ দিন</option>
+      <option value="thisMonth">চলতি মাস</option>
+    </select>
+    <button class="btn-light" onclick="print()"><i class="fa-solid fa-print"></i> প্রিন্ট</button>
+    <button class="btn-dark" onclick="resetForm()"><i class="fa-solid fa-rotate-left"></i> রিসেট</button>
+  </div>
+</section>
+
+<nav class="tabs">
+  <button class="tab active" onclick="setTab('active',this)">চলমান</button>
+  <button class="tab" onclick="setTab('today',this)">আজ</button>
+  <button class="tab" onclick="setTab('workdays',this)">রবি-বৃহস্পতি</button>
+  <button class="tab" onclick="setTab('week',this)">সপ্তাহ</button>
+  <button class="tab" onclick="setTab('month',this)">মাস</button>
+  <button class="tab" onclick="setTab('year',this)">বছর</button>
+  <button class="tab" onclick="setTab('done',this)">সম্পন্ন</button>
+  <button class="tab" onclick="setTab('all',this)">সব</button>
+  <span class="tab-spacer"></span>
+  <button class="tab btn-success" onclick="exportJSON()"><i class="fa-solid fa-download"></i> Backup</button>
+  <button class="tab btn-light" onclick="document.getElementById('importFile').click()"><i class="fa-solid fa-upload"></i> Restore</button>
+  <input type="file" class="file-input" id="importFile" accept="application/json" onchange="importJSON(event)" />
+</nav>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:50px">স্ট্যাটাস</th>
+        <th>বিবরণ ও সতর্কতা</th>
+        <th style="width:160px">শুরু</th>
+        <th style="width:160px">শেষ</th>
+        <th style="width:170px">অ্যাকশন</th>
+      </tr>
+    </thead>
+    <tbody id="taskBody"></tbody>
+  </table>
+</div>
+
+<div class="footer-tools no-print">
+  <div class="small-note">
+    ডাটা আপনার ব্রাউজারের LocalStorage-এ সংরক্ষিত থাকে। মোবাইল/পিসি বদলালে Backup JSON নিয়ে Restore করুন।
+  </div>
+  <button class="btn-danger" style="width:auto" onclick="clearAll()"><i class="fa-solid fa-trash-can"></i> সব ডাটা মুছুন</button>
+</div>
+
+  </div><script>
+  const TASK_KEY = 'off_db_2026_v2';
+  const HOL_KEY = 'hol_db_2026_v2';
+  const OLD_TASK_KEY = 'off_db_2026';
+  const OLD_HOL_KEY = 'hol_db_2026';
+
+  let tasks = loadData(TASK_KEY, OLD_TASK_KEY).map(normalizeTask);
+  let holidays = loadData(HOL_KEY, OLD_HOL_KEY).map(normalizeHoliday);
+  let currentTab = 'active';
+
+  function loadData(key, oldKey){
+    try{
+      const fresh = localStorage.getItem(key);
+      if(fresh) return JSON.parse(fresh) || [];
+      const old = localStorage.getItem(oldKey);
+      if(old) return JSON.parse(old) || [];
+      return [];
+    }catch(e){ return []; }
+  }
+
+  function normalizeTask(t){
+    return {
+      id: t.id || Date.now() + Math.random(),
+      title: t.title || '',
+      s: t.s || '',
+      e: t.e || t.s || '',
+      status: t.status || 'active',
+      priority: t.priority || 'normal',
+      createdAt: t.createdAt || new Date().toISOString()
+    };
+  }
+
+  function normalizeHoliday(h){
+    return {id:h.id || Date.now()+Math.random(), title:h.title || '', s:h.s || '', e:h.e || h.s || ''};
+  }
+
+  function sync(){
+    localStorage.setItem(TASK_KEY, JSON.stringify(tasks));
+    localStorage.setItem(HOL_KEY, JSON.stringify(holidays));
+    render();
+  }
+
+  function todayISO(){
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0,10);
+  }
+
+  function asDate(dateStr){
+    return new Date(dateStr + 'T00:00:00');
+  }
+
+  function formatBN(dateStr){
+    if(!dateStr) return '-';
+    return asDate(dateStr).toLocaleDateString('bn-BD',{weekday:'short', day:'2-digit', month:'short', year:'numeric'});
+  }
+
+  function daysBetween(a,b){
+    return Math.round((asDate(a) - asDate(b))/(1000*60*60*24));
+  }
+
+  function isWeekend(dateStr){
+    const day = asDate(dateStr).getDay();
+    return day === 5 || day === 6;
+  }
+
+  function overlaps(aS,aE,bS,bE){
+    return aS <= bE && bS <= aE;
+  }
+
+  function updateClock(){
+    const now = new Date();
+    document.getElementById('clock').innerHTML = `
+      <strong>${now.toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</strong>
+      ${now.toLocaleDateString('bn-BD',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+    `;
+  }
+  setInterval(updateClock,1000); updateClock();
+
+  function saveTask(){
+    const id = document.getElementById('editId').value;
+    const title = document.getElementById('tTitle').value.trim();
+    const s = document.getElementById('tS').value;
+    const e = document.getElementById('tE').value || s;
+    const priority = document.getElementById('tPriority').value;
+
+    if(!title || !s){ alert('কাজের নাম ও শুরু তারিখ দিন।'); return; }
+    if(e < s){ alert('শেষ তারিখ শুরু তারিখের আগে হতে পারে না।'); return; }
+
+    if(id){
+      const idx = tasks.findIndex(t => String(t.id) === String(id));
+      if(idx > -1) tasks[idx] = {...tasks[idx], title, s, e, priority};
+    }else{
+      tasks.push({id:Date.now(), title, s, e, priority, status:'active', createdAt:new Date().toISOString()});
+    }
+    resetForm(false);
+    sync();
+  }
+
+  function addHoliday(){
+    const title = document.getElementById('hTitle').value.trim();
+    const s = document.getElementById('hS').value;
+    const e = document.getElementById('hE').value || s;
+    if(!title || !s){ alert('ছুটির কারণ ও তারিখ দিন।'); return; }
+    if(e < s){ alert('ছুটির শেষ তারিখ শুরু তারিখের আগে হতে পারে না।'); return; }
+    holidays.push({id:Date.now(), title, s, e});
+    ['hTitle','hS','hE'].forEach(id=>document.getElementById(id).value='');
+    sync();
+  }
+
+  function resetForm(doRender=true){
+    ['editId','tTitle','tS','tE'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('tPriority').value='normal';
+    document.getElementById('saveBtn').innerHTML='<i class="fa-solid fa-floppy-disk"></i> সেভ';
+    if(doRender) render();
+  }
+
+  function setTab(tab, btn){
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  function taskState(t){
+    const today = todayISO();
+    if(t.status === 'completed') return 'completed';
+    if(t.e < today) return 'overdue';
+    if(t.s <= today && today <= t.e) return 'running';
+    if(t.s === today) return 'today';
+    return 'upcoming';
+  }
+
+  function tabMatch(t){
+    const today = todayISO();
+    const now = new Date();
+    const dS = asDate(t.s);
+    const diff = daysBetween(t.s, today);
+
+    if(currentTab === 'all') return true;
+    if(currentTab === 'active') return t.status === 'active';
+    if(currentTab === 'done') return t.status === 'completed';
+    if(currentTab === 'today') return overlaps(t.s,t.e,today,today);
+    if(currentTab === 'workdays') return !isWeekend(t.s);
+    if(currentTab === 'week') return diff >= -1 && diff <= 7;
+    if(currentTab === 'month') return dS.getMonth() === now.getMonth() && dS.getFullYear() === now.getFullYear();
+    if(currentTab === 'year') return dS.getFullYear() === now.getFullYear();
+    return true;
+  }
+
+  function rangeMatch(t){
+    const f = document.getElementById('rangeFilter').value;
+    const today = todayISO();
+    const now = new Date();
+    const dS = asDate(t.s);
+    const diff = daysBetween(t.s, today);
+    if(f === 'all') return true;
+    if(f === 'today') return t.s === today;
+    if(f === 'runningToday') return overlaps(t.s,t.e,today,today);
+    if(f === 'overdue') return t.status !== 'completed' && t.e < today;
+    if(f === 'next7') return diff >= 0 && diff <= 7;
+    if(f === 'thisMonth') return dS.getMonth() === now.getMonth() && dS.getFullYear() === now.getFullYear();
+    return true;
+  }
+
+  function searchMatch(t){
+    const q = document.getElementById('searchBox').value.trim().toLowerCase();
+    if(!q) return true;
+    return t.title.toLowerCase().includes(q) || t.s.includes(q) || t.e.includes(q) || t.priority.includes(q);
+  }
+
+  function sortTasks(list){
+    const by = document.getElementById('sortBy').value;
+    const priorityRank = {high:0, normal:1, low:2};
+    return list.sort((a,b)=>{
+      if(by === 'startAsc') return a.s.localeCompare(b.s);
+      if(by === 'startDesc') return b.s.localeCompare(a.s);
+      if(by === 'endAsc') return a.e.localeCompare(b.e);
+      if(by === 'endDesc') return b.e.localeCompare(a.e);
+      if(by === 'priority') return priorityRank[a.priority] - priorityRank[b.priority] || a.s.localeCompare(b.s);
+      return 0;
+    });
+  }
+
+  function renderStats(){
+    const today = todayISO();
+    const active = tasks.filter(t=>t.status==='active').length;
+    const done = tasks.filter(t=>t.status==='completed').length;
+    const todayCount = tasks.filter(t=>overlaps(t.s,t.e,today,today)).length;
+    const overdue = tasks.filter(t=>t.status!=='completed' && t.e < today).length;
+    const high = tasks.filter(t=>t.status!=='completed' && t.priority==='high').length;
+    const holToday = holidays.filter(h=>overlaps(h.s,h.e,today,today)).length;
+
+    document.getElementById('stats').innerHTML = `
+      <div class="stat"><span><i class="fa-solid fa-list-check"></i> মোট কাজ</span><b>${bn(tasks.length)}</b></div>
+      <div class="stat"><span><i class="fa-solid fa-spinner"></i> চলমান</span><b>${bn(active)}</b></div>
+      <div class="stat"><span><i class="fa-solid fa-calendar-day"></i> আজ</span><b>${bn(todayCount)}</b></div>
+      <div class="stat"><span><i class="fa-solid fa-triangle-exclamation"></i> সময় পার</span><b>${bn(overdue)}</b></div>
+      <div class="stat"><span><i class="fa-solid fa-bolt"></i> জরুরি</span><b>${bn(high)}</b></div>
+      <div class="stat"><span><i class="fa-solid fa-umbrella-beach"></i> আজ ছুটি</span><b>${bn(holToday)}</b></div>
+    `;
+  }
+
+  function renderHolidays(){
+    const hList = document.getElementById('hList');
+    hList.innerHTML = holidays.length ? holidays.map(h=>`
+      <span class="chip" title="${h.s} থেকে ${h.e}">
+        <i class="fa-solid fa-calendar-xmark"></i> ${escapeHTML(h.title)}: ${formatBN(h.s)}${h.e!==h.s?' - '+formatBN(h.e):''}
+        <i class="fa-solid fa-xmark" onclick="deleteHoliday(${h.id})"></i>
+      </span>
+    `).join('') : '<span class="small-note">এখনো কোনো ছুটি যোগ করা হয়নি।</span>';
+  }
+
+  function render(){
+    renderStats();
+    renderHolidays();
+
+    const body = document.getElementById('taskBody');
+    let list = tasks.filter(t=>tabMatch(t) && rangeMatch(t) && searchMatch(t));
+    list = sortTasks(list);
+
+    if(!list.length){
+      body.innerHTML = `<tr><td colspan="5"><div class="empty"><i class="fa-regular fa-folder-open fa-2x"></i><br><br>এই ফিল্টারে কোনো কাজ পাওয়া যায়নি।</div></td></tr>`;
+      return;
+    }
+
+    body.innerHTML = list.map(t=>taskRow(t)).join('');
+  }
+
+  function taskRow(t){
+    const today = todayISO();
+    const state = taskState(t);
+    const stateBadge = state === 'completed' ? '<span class="badge b-done">সম্পন্ন</span>' :
+      state === 'overdue' ? '<span class="badge b-overdue">সময় পার</span>' :
+      state === 'running' ? '<span class="badge b-today">আজ চলমান</span>' :
+      '<span class="badge b-active">চলমান</span>';
+
+    const priorityText = {high:'জরুরি', normal:'সাধারণ', low:'কম জরুরি'}[t.priority] || 'সাধারণ';
+    const priorityClass = {high:'priority-high', normal:'priority-normal', low:'priority-low'}[t.priority] || 'priority-normal';
+
+    let alerts = [];
+    holidays.forEach(h=>{
+      if(overlaps(t.s,t.e,h.s,h.e)) alerts.push(`<span class="badge b-holiday"><i class="fa-solid fa-calendar-xmark"></i> ছুটি: ${escapeHTML(h.title)}</span>`);
+    });
+    if(isWeekend(t.s)) alerts.push('<span class="badge b-weekend"><i class="fa-solid fa-mug-hot"></i> সাপ্তাহিক ছুটি</span>');
+    if(t.status !== 'completed' && t.e < today) alerts.push(`<span class="badge b-overdue"><i class="fa-solid fa-clock"></i> ${bn(Math.abs(daysBetween(t.e,today)))} দিন পার</span>`);
+    if(t.status !== 'completed' && t.s > today) alerts.push(`<span class="badge b-active"><i class="fa-solid fa-hourglass-start"></i> ${bn(daysBetween(t.s,today))} দিন বাকি</span>`);
+
+    const doneStyle = t.status === 'completed' ? 'opacity:.58;text-decoration:none;' : '';
+    const icon = t.status === 'completed' ? 'fa-circle-check' : 'fa-circle';
+
+    return `
+      <tr style="${doneStyle}">
+        <td>
+          <button class="icon-btn ok" onclick="toggleTask(${t.id})" title="স্ট্যাটাস পরিবর্তন"><i class="fa-regular ${icon}"></i></button>
+        </td>
+        <td>
+          <div class="task-title">${escapeHTML(t.title)}</div>
+          <div class="meta">
+            ${stateBadge}
+            <span class="badge ${priorityClass}"><i class="fa-solid fa-flag"></i> ${priorityText}</span>
+            ${alerts.join('')}
+          </div>
+        </td>
+        <td><span class="badge b-start"><i class="fa-solid fa-play"></i> ${formatBN(t.s)}</span></td>
+        <td><span class="badge b-end"><i class="fa-solid fa-stop"></i> ${formatBN(t.e)}</span></td>
+        <td>
+          <div class="actions">
+            <button class="icon-btn edit" onclick="editTask(${t.id})" title="এডিট"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="icon-btn del" onclick="deleteTask(${t.id})" title="ডিলিট"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>`;
+  }
+
+  function toggleTask(id){
+    const t = tasks.find(x=>String(x.id)===String(id));
+    if(!t) return;
+    t.status = t.status === 'completed' ? 'active' : 'completed';
+    sync();
+  }
+
+  function editTask(id){
+    const t = tasks.find(x=>String(x.id)===String(id));
+    if(!t) return;
+    document.getElementById('editId').value=t.id;
+    document.getElementById('tTitle').value=t.title;
+    document.getElementById('tS').value=t.s;
+    document.getElementById('tE').value=t.e;
+    document.getElementById('tPriority').value=t.priority || 'normal';
+    document.getElementById('saveBtn').innerHTML='<i class="fa-solid fa-pen-to-square"></i> আপডেট';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function deleteTask(id){
+    if(confirm('এই কাজটি মুছে ফেলবেন?')){
+      tasks = tasks.filter(x=>String(x.id)!==String(id));
+      sync();
+    }
+  }
+
+  function deleteHoliday(id){
+    if(confirm('এই ছুটি মুছে ফেলবেন?')){
+      holidays = holidays.filter(x=>String(x.id)!==String(id));
+      sync();
+    }
+  }
+
+  function exportJSON(){
+    const d = todayISO();
+    const data = {version:'2.0', exportedAt:new Date().toISOString(), tasks, holidays};
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Office_Tracker_Backup_${d}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function importJSON(event){
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(){
+      try{
+        const data = JSON.parse(reader.result);
+        const newTasks = Array.isArray(data.tasks) ? data.tasks.map(normalizeTask) : [];
+        const newHolidays = Array.isArray(data.holidays) ? data.holidays.map(normalizeHoliday) : [];
+        if(!confirm(`Backup থেকে ${bn(newTasks.length)}টি কাজ এবং ${bn(newHolidays.length)}টি ছুটি Restore হবে। আগের ডাটা বদলে যাবে। চালিয়ে যাবেন?`)) return;
+        tasks = newTasks;
+        holidays = newHolidays;
+        sync();
+        alert('Restore সম্পন্ন হয়েছে।');
+      }catch(e){ alert('সঠিক JSON Backup ফাইল নয়।'); }
+      event.target.value='';
+    };
+    reader.readAsText(file);
+  }
+
+  function clearAll(){
+    if(confirm('সব কাজ ও ছুটির ডাটা মুছে যাবে। আগে Backup নেওয়া আছে তো?')){
+      if(confirm('নিশ্চিতভাবে সব মুছবেন?')){
+        tasks=[]; holidays=[]; sync();
+      }
+    }
+  }
+
+  function escapeHTML(str){
+    return String(str).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+
+  function bn(n){
+    return String(n).replace(/\d/g, d=>'০১২৩৪৫৬৭৮৯'[d]);
+  }
+
+  sync();
+</script></body>
+</html>
